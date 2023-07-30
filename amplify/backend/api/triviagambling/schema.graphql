@@ -1,0 +1,92 @@
+
+
+type RoomMember @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  playerID: String!
+  roomID: String!
+  status: String
+  playerName: String
+  playerImage: String
+  playerLevel: Int
+}
+
+enum CompetitionStatus {
+  PLANNED
+  ACTIVE
+  STARTED
+  ENDED
+  SETTLED
+}
+
+enum RoomStatus {
+  EMPTY
+  PARTIAL
+  FULL
+}
+
+type Room @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  totalMembers: Int!
+  maxMembers: Int!
+  status: RoomStatus
+  category: String!
+  currentQuestion: Int!
+  questionIDs: [ID]!
+  points: AWSJSON
+}
+
+type RaceMode @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  description: String
+  duration: Int!
+  image: String
+  questions: [Question] @hasMany(indexName: "byRaceMode", fields: ["id"])
+  category: String!
+}
+
+type CompetitionMode @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  description: String
+  duration: Int!
+  start: AWSDateTime!
+  end: AWSDateTime!
+  image: String
+  questions: [Question] @hasMany(indexName: "byCompetitionMode", fields: ["id"])
+  status: CompetitionStatus!
+}
+
+type NormalMode @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  duration: Int!
+  questions: [Question] @hasMany(indexName: "byNormalMode", fields: ["id"])
+  description: String
+  image: String
+}
+
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  username: String
+  level: Int!
+  picture: String
+}
+
+type Question @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  body: String!
+  options: [String!]!
+  answer: String!
+  totalRight: String!
+  totalWrong: String!
+  totalViews: String!
+  level: Int
+  competitionmodeID: ID! @index(name: "byCompetitionMode")
+  racemodeID: ID! @index(name: "byRaceMode")
+  normalmodeID: ID! @index(name: "byNormalMode")
+  image: String
+  categories: [String!]!
+}
+ 
