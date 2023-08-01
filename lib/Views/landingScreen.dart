@@ -28,10 +28,11 @@ class _LandingScreenState extends State<LandingScreen> {
 
   Future<void> _configureAmplify() async {
     // Add any Amplify plugins you want to use
-    final datastorePlugin =
-        AmplifyDataStore(modelProvider: ModelProvider.instance);
-        final api = AmplifyAPI();
-    await Amplify.addPlugins([datastorePlugin,api]);
+    final datastorePlugin = AmplifyDataStore(
+        modelProvider: ModelProvider.instance,
+        authModeStrategy: AuthModeStrategy.multiAuth);
+    final api = AmplifyAPI();
+    await Amplify.addPlugins([datastorePlugin, api]);
     final authPlugin = AmplifyAuthCognito();
     await Amplify.addPlugin(authPlugin);
 

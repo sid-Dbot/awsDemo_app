@@ -4,6 +4,10 @@ import 'package:new_app/Views/resetPassword.dart';
 import 'package:new_app/extractedWidgets.dart';
 import 'package:new_app/provider.dart';
 
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_datastore/amplify_datastore.dart';
+import '../models/User.dart';
+
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -12,6 +16,15 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  Future<void> queryPosts() async {
+    try {
+      final posts = await Amplify.DataStore.query(User.classType);
+      safePrint('user: $posts');
+    } on DataStoreException catch (e) {
+      safePrint('Something went wrong querying posts: ${e.message}');
+    }
+  }
+
   var _email = TextEditingController();
   var _password = TextEditingController();
   @override
@@ -27,10 +40,15 @@ class _LoginState extends State<Login> {
               color: Colors.white,
               textColor: Colors.black,
             ),
-            CustomButton(
-              buttonName: 'Login with Facebook',
-              color: Color(0xFF0056B2),
-              textColor: Colors.white,
+            GestureDetector(
+              onTap: () async {
+                await queryPosts();
+              },
+              child: CustomButton(
+                buttonName: 'Login with Facebook',
+                color: Color(0xFF0056B2),
+                textColor: Colors.white,
+              ),
             ),
             CustomText(
                 text: 'OR',
